@@ -1744,7 +1744,7 @@ $('#mode').click(function(){
         $('#card-front').text(word.en);
         $('#card-back').text(word.ja);
         ansNext();
-    }        
+    }
 });
 
 $('h1').click(function(){
