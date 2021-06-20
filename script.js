@@ -1536,21 +1536,14 @@ const words = [
 ];
 ///////////////////////////////////////////////////////////////
 
-///解答シャッフル
-function arrayShuffle(array) {
-    for(var i = (array.length - 1); 0 < i; i--){
-  
-      // 0〜(i+1)の範囲で値を取得
-      var r = Math.floor(Math.random() * (i + 1));
-  
-      // 要素の並び替えを実行
-      var tmp = array[i];
-      array[i] = array[r];
-      array[r] = tmp;
+///シャッフル
+const shuffle = ([...array]) => {
+    for (let i = array.length - 1; i >= 0; i--) {
+      const j = Math.floor(Math.random() * (i + 1));
+      [array[i], array[j]] = [array[j], array[i]];
     }
     return array;
   }
-
 
 
 ///初期値/////////////////////
@@ -1558,117 +1551,117 @@ function arrayShuffle(array) {
 $('#min').val(1);
 $('#max').val(Math.ceil(words.length /10));
 
+
 var min = (eval($('#min').val())-1)*10;
-var max = eval($('#max').val())*10-1;
+var max = eval($('#max').val())*10;
 var minUnit = $('#min').val();
 var maxUnit = $('#max').val();
 $('h1').text(`Unit${minUnit}〜Unit${maxUnit}`);
+var wordsSet = words
+var word= wordsSet[min];
 
-function unitSet(){
-    return Math.floor(Math.random() * (max+1 - min)) + min;
-}
-
-var rand = unitSet();
-///////////////////////////////////
-
-
-var ans00 
-var ans01 
-var ans02 
-var ans03 
-
-var ansList=[ans00,ans01,ans02,ans03];
-
-
-$('#re').click(function (){
+$('#re').click(function(){
     min = (eval($('#min').val())-1)*10;
-    max = eval($('#max').val())*10-1;
-    minUnit = $('#min').val();
-    maxUnit = $('#max').val();
+    max = eval($('#max').val())*10;
+    var minUnit = $('#min').val();
+    var maxUnit = $('#max').val();
     $('h1').text(`Unit${minUnit}〜Unit${maxUnit}`);
 
-    rand = unitSet();
-
-    if($('#mode').hasClass('en-to-ja')){
-        eSet();
-    }else{
-        jSet();
-    }
+    wordsSet= words.slice(min,max);
     $('.unit-modal-wrapper').css('display','none');
-});
 
-//解答セット
-function setAnsJa(){
-
-    ans00=words[rand].ja;
-    ans01=words[unitSet()].ja;
-    ans02=words[unitSet()].ja;
-    ans03=words[unitSet()].ja;
-    ansList=[ans00,ans01,ans02,ans03]; 
-    arrayShuffle(ansList);
-
-    $('#ans1').text(ansList[0]);
-    $('#ans2').text(ansList[1]);
-    $('#ans3').text(ansList[2]);
-    $('#ans4').text(ansList[3]);
+    wordsSet=shuffle(wordsSet);
+    word= wordsSet[0]
+    $('#card-front').text(word.en);
+    $('#card-back').text(word.ja);  
+    ansNext();
+    i=0;
 }
+)
 
-function setAnsEn(){
+///////次の単語
+var i = 0;
+var ansList = wordsSet.slice().sort(function(){ return Math.random() - 0.5; }).slice(0, 3);
+var rand=[0,1,2,3];
+ansNext();
 
-    ans00=words[rand].en;
-    ans01=words[unitSet()].en;
-    ans02=words[unitSet()].en;
-    ans03=words[unitSet()].en;
-    ansList=[ans00,ans01,ans02,ans03]; 
-    arrayShuffle(ansList);
-
-    $('#ans1').text(ansList[0]);
-    $('#ans2').text(ansList[1]);
-    $('#ans3').text(ansList[2]);
-    $('#ans4').text(ansList[3]);
-
-}
-
-
-
-//カードセット
-function eSet(){
-    rand = unitSet();
-    $('#card-front').text(words[rand].en);
-    $('#card-back').text(words[rand].ja);  
-    setAnsJa();
-
-}
-eSet();
-
-function jSet(){
-    rand = unitSet();
-    $('#card-front').text(words[rand].ja);
-    $('#card-back').text(words[rand].en);
-    setAnsEn();
-}
-
-
-//切り替え
-$('#mode').click(function(){
-    
+function eNext(){
+    i = i+1;
+    word= wordsSet[i]
+    ///もし英語から日本語なら
     if($('#mode').hasClass("en-to-ja")){
-        $('#mode').removeClass("en-to-ja");
-        $('#mode').text("日本語→英語");
-        $('#card-front').text(words[rand].ja);
-        $('#card-back').text(words[rand].en); 
-        setAnsEn();
-        
-    } else{
-        $('#mode').addClass("en-to-ja");
-        $('#mode').text("英語→日本語");
-        $('#card-front').text(words[rand].en);
-        $('#card-back').text(words[rand].ja);
-        setAnsJa();
-    }        
-});
+        $('#card-front').text(word.en);
+        $('#card-back').text(word.ja);  
+    }else{
+        $('#card-front').text(word.ja);
+        $('#card-back').text(word.en);  
+    }
+}
 
-///カード裏返し///
+function ansNext(){
+    ansList = wordsSet.slice().sort(function(){ return Math.random() - 0.5; }).slice(0, 3);
+
+    while(ansList.includes(word)){
+        ansList = wordsSet.slice().sort(function(){ return Math.random() - 0.5; }).slice(0, 3);
+    }
+    ansList.push(word);
+
+    rand=shuffle(rand);
+
+    ///英語から日本語なら
+    if($('#mode').hasClass("en-to-ja")){
+        $('#ans1').text(ansList[rand[0]].ja);
+        $('#ans2').text(ansList[rand[1]].ja);
+        $('#ans3').text(ansList[rand[2]].ja);
+        $('#ans4').text(ansList[rand[3]].ja);
+    }else{
+        $('#ans1').text(ansList[rand[0]].en);
+        $('#ans2').text(ansList[rand[1]].en);
+        $('#ans3').text(ansList[rand[2]].en);
+        $('#ans4').text(ansList[rand[3]].en);
+    }
+}
+
+
+///NEXTボタン
+function next(){
+    if(i<max-1){
+        eNext();
+        ansNext();
+    }else{
+        if(!alert(ansCount+'門正解')){
+            wordsSet=shuffle(wordsSet);
+            word= wordsSet[0]
+            $('#card-front').text(word.en);
+            $('#card-back').text(word.ja);  
+            $('#ans1').text(word.ja);
+            i=0;
+        }
+    }
+}
+
+
+
+///カードめくり（解答が出てるとき）
+function enToJa(){
+    if($('#card').hasClass('open')){
+        $('#card').removeClass('open').delay(600).queue(function(next){
+            eNext();
+            ansNext();
+            $("#card-back").css('background', '#5dca88')
+            next();
+        });
+    }else{
+        next();
+    }
+}
+
+$('#btn').click(function(){
+    enToJa();
+})
+
+
+///カード裏返し
 function flip(){
     if($('#card').hasClass("open")){
         $('#card').removeClass("open");
@@ -1679,66 +1672,48 @@ function flip(){
 $('#card').click(flip);
 
 
-///次のカード///
-$('#btn').click(function(){
-
-    ///英語→日本語
-    if($('#mode').hasClass('en-to-ja')){
-        enToJa();
-
-    ///日本語→英語
-    }else{
-        jaToEn();
-    }
-});    
-
-
-///日本語→英語めくり
-function jaToEn(){
-    if($('#card').hasClass('open')){
-        $('#card').removeClass('open').delay(600).queue(function(next){
-            jSet();
-            $("#card-back").css('background', '#5dca88')
-            next();
-        });
-    }else{
-        jSet();
-    }
-}
-
-
-///英語→日本語めくり
-function enToJa(){
-    if($('#card').hasClass('open')){
-        $('#card').removeClass('open').delay(600).queue(function(next){
-            eSet();
-            $("#card-back").css('background', '#5dca88')
-            next();
-        });
-    }else{
-        eSet();
-    }
-}
 
 ///解答ボタン
 $('.ans').click(function(){
     flip();
     if($(this).text()===$('#card-back').text()){
         $("#card-back").css('background', '#ff7474');
-        	// [ID:sound-file]の音声ファイルを再生[play()]する
-	$('#sound-file1').get(0).play() ;
+        // [ID:sound-file]の音声ファイルを再生[play()]する
+	    $('#sound-file1').get(0).play() ;
+        // 生回数を数える
+        ansCount=ansCount+1;
     }else{
         $("#card-back").css('background', '#2181ff');
-        	// [ID:sound-file]の音声ファイルを再生[play()]する
-	$('#sound-file2').get(0).play() ;
+        // [ID:sound-file]の音声ファイルを再生[play()]する
+	    $('#sound-file2').get(0).play();
+        //間違ったリスト
+        missList.push(word);
     }
 });
+var ansCount=0;
+var missList=[];
 
+//切り替え
+$('#mode').click(function(){
+    
+    if($('#mode').hasClass("en-to-ja")){
+        $('#mode').removeClass("en-to-ja");
+        $('#mode').text("日本語→英語");
+        $('#card-front').text(word.ja);
+        $('#card-back').text(word.en); 
+        ansNext();
+    } else{
+        $('#mode').addClass("en-to-ja");
+        $('#mode').text("英語→日本語");
+        $('#card-front').text(word.en);
+        $('#card-back').text(word.ja);
+        ansNext();
+    }        
+});
 
 $('h1').click(function(){
     $('.unit-modal-wrapper').css('display','block');
-})
-
+});
 
 
 });
