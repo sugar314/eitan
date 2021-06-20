@@ -330,8 +330,25 @@ display: none;
 position: absolute;
 display: block;
 bottom: 0%;
-left: 22%;
-width: 40vw;
+left: 16%;
+width: 20vw;
+height: 10vh;
+background-color: #5dca88;
+border: none;
+border-radius: 1px;
+line-height: 10vh;
+color: white;
+margin: 6vh auto;
+cursor: pointer;
+font-size: 28px;
+}
+
+#rand-mode{
+position: absolute;
+display: block;
+bottom: 0%;
+right: 15%;
+width: 20vw;
 height: 10vh;
 background-color: #5dca88;
 border: none;
@@ -347,6 +364,14 @@ font-size: 28px;
   #re{
   font-size: 16px;
   left: 14%;
-  width: 50vw;
+  width: 23vw;
+  }
+}
+
+@media(max-width:600px){
+  #rand-mode{
+  font-size: 16px;
+  right: 15%;
+  width: 23vw;
   }
 }
