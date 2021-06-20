@@ -1598,9 +1598,21 @@ var rand=[0,1,2,3];
 ansNext();
 
 function eNext(){
-    i = i+1;
     if($('#mode-set').hasClass('nomal')){
-        word= wordsSet[i];
+        i = i+1;
+        if(i===max){
+            if(!alert(ansCount+'門正解')){
+                wordsSet=shuffle(wordsSet);
+                word= wordsSet[0]
+                $('#card-front').text(word.en);
+                $('#card-back').text(word.ja);  
+                $('#ans1').text(word.ja);
+                i=0;
+                ansCount=0;
+            }
+        }else{
+            word= wordsSet[i];
+        }
     }else if($('#mode-set').hasClass('endless')){
         wordsSet=shuffle(wordsSet);
         word= wordsSet[0];
@@ -1654,6 +1666,7 @@ function next(){
                 $('#card-back').text(word.ja);  
                 $('#ans1').text(word.ja);
                 i=0;
+                ansCount=0;
             }
         }
     }else{
