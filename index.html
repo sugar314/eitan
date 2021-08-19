@@ -41,26 +41,33 @@
 
   <div id='mode-set'></div>
 
-	<div class="title-top">
+	<div id="title-top">
     <h1></h1>	
     <h2 id="mode" class="en-to-ja">英語→日本語</h2>
+    <h2 id="all-mode" class="all-show">　全表示　</h2>
   </div>
 
-	<div id="card">
-		<div id="card-front" class='card-text'></div>
-		<div id="card-back" class='card-text'></div>
+  <div id='game'>
+    <div id="card">
+      <div id="card-front" class='card-text'></div>
+      <div id="card-back" class='card-text'></div>
+    </div>
+
+    <div class="clear"></div>
+    
+    <div id="ans-wrapper">
+      <div id="ans1" class="ans">1</div>
+      <div id="ans2" class="ans">2</div>
+      <div id="ans3" class="ans">3</div>
+      <div id="ans4" class="ans">4</div>
+    </div>
+
+    <div id="btn">NEXT</div>
   </div>
 
-  <div class="clear"></div>
-  
-  <div id="ans-wrapper">
-    <div id="ans1" class="ans">1</div>
-    <div id="ans2" class="ans">2</div>
-    <div id="ans3" class="ans">3</div>
-    <div id="ans4" class="ans">4</div>
+  <div id='test-flex' class='hide'>
+    <table id='test' border="1" style="border-collapse: collapse"></table>
   </div>
-
-  <div id="btn">NEXT</div>
     
   <audio id="sound-file1" preload="auto">
     <source src="Quiz-Correct_Answer01-1.mp3" type="audio/mp3">
