@@ -130,7 +130,7 @@ const words = [
     {en: 'encourage', ja: '～を励ます'},
     {en: 'expect', ja: '～を予想[予期]する'},
     {en: 'deal', ja: '〜を処理する'},
-    {en: 'measure', ja: '(大きさ・量・速さなど)を測る'},
+    {en: 'measure', ja: '(大きさ・量など)を測る'},
     {en: 'demand', ja: '～を要求する'},
     {en: 'contain', ja: '(容器・本などが)～を含む'},
     {en: 'various', ja: 'さまざまな'},
@@ -164,7 +164,7 @@ const words = [
     {en: 'figure', ja: '数値'},
     {en: 'decade', ja: '10年間'},
     {en: 'exist', ja: '存在する'},
-    {en: 'reduce', ja: '(数量・程度など)を減らす'},
+    {en: 'reduce', ja: '(数量など)を減らす'},
     {en: 'gain', ja: '～を得る'},
     {en: 'require', ja: '～を必要とする'},
     {en: 'prove', ja: '～を証明する'},
@@ -1576,7 +1576,11 @@ $('.mode-btn').click(function(){
     $('#card-back').text(word.ja);  
     ansNext();
     i=0;
-
+    if($('#mode-set').hasClass('nomal')){
+        showAllEnToJa();
+    }else{
+        showAllEnToJa();
+    }
 }
 )
 
@@ -1590,6 +1594,23 @@ $('#rand-mode').click(function(){
     $('#mode-set').addClass('endless');
 });
 
+
+//////////全表示
+function showAllEnToJa(){
+        var setList = ['<tr><th>英語</th> <th>日本語</th></tr>'];　//ここが配列になる
+        for (let k=0; k<wordsSet.length; k++){
+          setList.push('<tr id='+'tr'+k+'><td>'+ wordsSet[k].en+'</td> <td>'+wordsSet[k].ja+'</td></tr>'); //ここにpush()がくる
+        }
+        test.innerHTML = setList.join('');
+}
+
+function showAllJaToEn(){
+    var setList = ['<tr><th>日本語</th> <th>英語</th></tr>'];　//ここが配列になる
+    for (let k=0; k<wordsSet.length; k++){
+      setList.push('<tr id='+'tr'+k+'><td>'+ wordsSet[k].ja+'</td> <td>'+wordsSet[k].en+'</td></tr>'); //ここにpush()がくる
+    }
+    test.innerHTML = setList.join('');
+}
 
 ///////次の単語
 var i = 0;
@@ -1609,6 +1630,11 @@ function eNext(){
                 $('#ans1').text(word.ja);
                 i=0;
                 ansCount=0;
+                ansNext();
+                
+                $('#game').addClass('hide');
+                $('#test-flex').removeClass('hide');
+                $('#all-mode').text('再スタート');
             }
         }else{
             word= wordsSet[i];
@@ -1662,11 +1688,19 @@ function next(){
             if(!alert(ansCount+'門正解')){
                 wordsSet=shuffle(wordsSet);
                 word= wordsSet[0]
-                $('#card-front').text(word.en);
-                $('#card-back').text(word.ja);  
-                $('#ans1').text(word.ja);
                 i=0;
                 ansCount=0;
+                ansNext();
+                if($('#mode').hasClass('en-to-ja')){
+                    $('#card-front').text(word.en);
+                    $('#card-back').text(word.ja);  
+                }else{
+                    $('#card-front').text(word.ja);
+                    $('#card-back').text(word.en);  
+                }
+                $('#game').addClass('hide');
+                $('#test-flex').removeClass('hide');
+                $('#all-mode').text('再スタート');
             }
         }
     }else{
@@ -1716,18 +1750,31 @@ $('.ans').click(function(){
         $("#card-back").css('background', '#ff7474');
         // [ID:sound-file]の音声ファイルを再生[play()]する
 	    $('#sound-file1').get(0).play() ;
-        // 生回数を数える
+        // 正解数を数える
         ansCount=ansCount+1;
     }else{
         $("#card-back").css('background', '#2181ff');
         // [ID:sound-file]の音声ファイルを再生[play()]する
 	    $('#sound-file2').get(0).play();
         //間違ったリスト
+        $('#tr'+i).addClass('miss')
         missList.push(word);
     }
 });
 var ansCount=0;
 var missList=[];
+
+function showMiss(){
+    if($('#mode').hasClass("en-to-ja")){
+        wordsSet=missList;
+        showAllEnToJa();
+    }else{
+        showAllJaToEn();
+    }
+    test.innerHTML = setList.join('');
+    }
+
+
 
 //切り替え
 $('#mode').click(function(){
@@ -1738,18 +1785,45 @@ $('#mode').click(function(){
         $('#card-front').text(word.ja);
         $('#card-back').text(word.en); 
         ansNext();
+        showAllJaToEn();
     } else{
         $('#mode').addClass("en-to-ja");
         $('#mode').text("英語→日本語");
         $('#card-front').text(word.en);
         $('#card-back').text(word.ja);
         ansNext();
+        showAllEnToJa();
+    }        
+});
+
+//全表示
+$('#all-mode').click(function(){
+    if($('#test-flex').hasClass('hide')){
+        $('#game').addClass('hide');
+        $('#test-flex').removeClass('hide');
+        $('#all-mode').text('再スタート');
+        i=-1;
+        $('#card').removeClass('open');
+        next();
+    }else{
+        $('#game').removeClass('hide');
+        $('#test-flex').addClass('hide');
+        $('#all-mode').text('　全表示　');
+
+        if($('#mode').hasClass("en-to-ja")){
+            showAllEnToJa();
+        }else{
+            showAllJaToEn();
+        }     
     }
 });
+
 
 $('h1').click(function(){
     $('.unit-modal-wrapper').css('display','block');
 });
+
+
 
 
 });
